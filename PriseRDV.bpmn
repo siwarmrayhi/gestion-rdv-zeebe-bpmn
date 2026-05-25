@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14pyydy" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.45.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:collaboration id="Collaboration_0gu62ma">
+    <bpmn:participant id="Participant_1x7w8k8" name="Cabinet" processRef="Process_047fsbm" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_047fsbm" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0duswvz">
+      <bpmn:lane id="Lane_1ud1dvx" name="Médecin">
+        <bpmn:flowNodeRef>Activity_1vxcbuv</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1mwccy2" name="Systémé">
+        <bpmn:flowNodeRef>Gateway_AssuranceValide</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_TrouverMedecin</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_MedecinDispo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerifierPatient</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PatientValide</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerifierAssurance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NotifierRefus</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Refuse</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>NotifyInsuranceRefused</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_12efq00</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EnvoyerRappel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Timer_Rappel</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ConfirmerRDV</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NotifierPatient</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Annule</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Success</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AnnulerRDV</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MAJDossier</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Facturation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NotifFinale</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_14z5loe" name="Patient">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0dx0mdr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ChooseAnotherSlot</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Consultation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>BoundaryEvent_Annulation</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:exclusiveGateway id="Gateway_AssuranceValide" name="Assurance&#10;valide ?">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_021buuz</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5_oui</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_TrouverMedecin" name="Trouver medecin&#10;disponible">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="find-doctor" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_5_oui</bpmn:incoming>
+      <bpmn:incoming>Flow_0kmzsrb</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_MedecinDispo" name="Medecin&#10;disponible ?">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_non</bpmn:outgoing>
+      <bpmn:outgoing>Flow_8_oui</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_VerifierPatient" name="Verifier dossier&#10;patient">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="verify-patient" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qckegk</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_PatientValide" name="Patient&#10;valide ?">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3_oui</bpmn:outgoing>
+      <bpmn:outgoing>Flow_3_non</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_VerifierAssurance" name="Verifier couverture&#10;assurance">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="check-insurance" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_3_oui</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_NotifierRefus" name="Notifier patient&#10;non trouve">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="verify-patient" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_3_non</bpmn:incoming>
+      <bpmn:outgoing>Flow_End_Refuse</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_Refuse" name="RDV refuse">
+      <bpmn:incoming>Flow_End_Refuse</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="NotifyInsuranceRefused" name="Notifier refus assurance">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="refus" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_021buuz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lop8s2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_05gn739</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_0dx0mdr" name="Demande RDV">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="Form_0k7ghz8" />
+        <zeebe:assignmentDefinition assignee="patient" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05gn739</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qckegk</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_VerifierAssurance" targetRef="Gateway_AssuranceValide" />
+    <bpmn:sequenceFlow id="Flow_021buuz" name="invalide" sourceRef="Gateway_AssuranceValide" targetRef="NotifyInsuranceRefused">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=assuranceValide = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5_oui" name="Valide" sourceRef="Gateway_AssuranceValide" targetRef="Task_TrouverMedecin">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=assuranceValide = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0kmzsrb" sourceRef="ChooseAnotherSlot" targetRef="Task_TrouverMedecin" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_TrouverMedecin" targetRef="Gateway_MedecinDispo" />
+    <bpmn:sequenceFlow id="Flow_0qckegk" sourceRef="Activity_0dx0mdr" targetRef="Task_VerifierPatient" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_VerifierPatient" targetRef="Gateway_PatientValide" />
+    <bpmn:sequenceFlow id="Flow_3_oui" name="Oui" sourceRef="Gateway_PatientValide" targetRef="Task_VerifierAssurance">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=patientValid = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_3_non" name="Non" sourceRef="Gateway_PatientValide" targetRef="Task_NotifierRefus">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=patientValid = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_End_Refuse" sourceRef="Task_NotifierRefus" targetRef="EndEvent_Refuse" />
+    <bpmn:sequenceFlow id="Flow_1lop8s2" sourceRef="NotifyInsuranceRefused" targetRef="Event_12efq00" />
+    <bpmn:sequenceFlow id="Flow_End_Annule" sourceRef="Task_AnnulerRDV" targetRef="EndEvent_Annule" />
+    <bpmn:sequenceFlow id="Flow_0ipmm0t" sourceRef="Activity_1vxcbuv" targetRef="Timer_Rappel" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_Consultation" targetRef="Task_MAJDossier" />
+    <bpmn:sequenceFlow id="Flow_Annulation" sourceRef="BoundaryEvent_Annulation" targetRef="Task_AnnulerRDV" />
+    <bpmn:sequenceFlow id="Flow_05gn739" sourceRef="StartEvent_1" targetRef="Activity_0dx0mdr" />
+    <bpmn:userTask id="ChooseAnotherSlot" name="Choisir autre créneau">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="Form_1j9kdi2" />
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_8_non</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kmzsrb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_12efq00" name="RDV refusé&#10;(assurance invalide)">
+      <bpmn:incoming>Flow_1lop8s2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_8_non" name="Non" sourceRef="Gateway_MedecinDispo" targetRef="ChooseAnotherSlot">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=medecinDisponible = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Timer_Rappel" targetRef="Task_EnvoyerRappel" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Task_EnvoyerRappel" targetRef="Task_Consultation" />
+    <bpmn:serviceTask id="Task_EnvoyerRappel" name="Envoyer rappel RDV">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-reminder" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="Timer_Rappel" name="Attendre (j-1)">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_0ipmm0t</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_8_oui" name="Oui" sourceRef="Gateway_MedecinDispo" targetRef="Task_ConfirmerRDV">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=medecinDisponible = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Task_ConfirmerRDV" name="Enregistrer le RDV">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="register-appointment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_8_oui</bpmn:incoming>
+      <bpmn:outgoing>Flow_13hm4pw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13hm4pw" sourceRef="Task_ConfirmerRDV" targetRef="Task_NotifierPatient" />
+    <bpmn:serviceTask id="Task_NotifierPatient" name="Envoyer confirmation&#10;patient">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-confirmation" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13hm4pw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xunjdw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_Annule" name="RDV annule">
+      <bpmn:incoming>Flow_End_Annule</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Success" name="Processus&#10;termine">
+      <bpmn:incoming>Flow_End_OK</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_AnnulerRDV" name="Annuler et&#10;rembourser">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="cancel-refund" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Annulation</bpmn:incoming>
+      <bpmn:outgoing>Flow_End_Annule</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="BoundaryEvent_Annulation" name="Patient&#10;annule" attachedToRef="Task_Consultation">
+      <bpmn:outgoing>Flow_Annulation</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1" messageRef="Message_Annulation" />
+    </bpmn:boundaryEvent>
+    <bpmn:userTask id="Task_Consultation" name="Consultation&#10;medicale">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="Form_12qrr0l" />
+        <zeebe:assignmentDefinition assignee="medecin" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_MAJDossier" name="MAJ dossier&#10;patient">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="update-patient-file" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_MAJDossier" targetRef="Task_Facturation" />
+    <bpmn:serviceTask id="Task_Facturation" name="Generer facture">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="generate-invoice" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="Task_Facturation" targetRef="Task_NotifFinale" />
+    <bpmn:serviceTask id="Task_NotifFinale" name="Envoyer facture&#10;au patient">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-invoice" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_End_OK</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_End_OK" sourceRef="Task_NotifFinale" targetRef="EndEvent_Success" />
+    <bpmn:sequenceFlow id="Flow_1xunjdw" sourceRef="Task_NotifierPatient" targetRef="Activity_1vxcbuv" />
+    <bpmn:userTask id="Activity_1vxcbuv" name="Confirmer disponibilité médecin">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="Form_1fflley" />
+        <zeebe:assignmentDefinition assignee="medecin" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xunjdw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ipmm0t</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmn:message id="Message_Annulation" name="annulation-rdv">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=appointmentId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0gu62ma">
+      <bpmndi:BPMNShape id="Participant_1x7w8k8_di" bpmnElement="Participant_1x7w8k8" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2750" height="1070" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_14z5loe_di" bpmnElement="Lane_14z5loe" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="2720" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1mwccy2_di" bpmnElement="Lane_1mwccy2" isHorizontal="true">
+        <dc:Bounds x="190" y="330" width="2720" height="520" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1ud1dvx_di" bpmnElement="Lane_1ud1dvx" isHorizontal="true">
+        <dc:Bounds x="190" y="850" width="2720" height="300" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_AssuranceValide_di" bpmnElement="Gateway_AssuranceValide" isMarkerVisible="true">
+        <dc:Bounds x="825" y="575" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="764" y="612" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_TrouverMedecin_di" bpmnElement="Task_TrouverMedecin">
+        <dc:Bounds x="1050" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_MedecinDispo_di" bpmnElement="Gateway_MedecinDispo" isMarkerVisible="true">
+        <dc:Bounds x="1205" y="575" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1201" y="635" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_VerifierPatient_di" bpmnElement="Task_VerifierPatient">
+        <dc:Bounds x="330" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_PatientValide_di" bpmnElement="Gateway_PatientValide" isMarkerVisible="true">
+        <dc:Bounds x="485" y="525" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="545" y="536" width="38" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_VerifierAssurance_di" bpmnElement="Task_VerifierAssurance">
+        <dc:Bounds x="568" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_NotifierRefus_di" bpmnElement="Task_NotifierRefus">
+        <dc:Bounds x="550" y="640" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Refuse_di" bpmnElement="EndEvent_Refuse">
+        <dc:Bounds x="692" y="662" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="682" y="705" width="58" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="NotifyInsuranceRefused_di" bpmnElement="NotifyInsuranceRefused">
+        <dc:Bounds x="780" y="360" width="160" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_051guc1" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="222" y="135" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qjfeov_di" bpmnElement="Activity_0dx0mdr">
+        <dc:Bounds x="360" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ChooseAnotherSlot_di" bpmnElement="ChooseAnotherSlot">
+        <dc:Bounds x="1130" y="140" width="200" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_02iwblz" bpmnElement="Event_12efq00">
+        <dc:Bounds x="1002" y="372" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="991" y="415" width="58" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_EnvoyerRappel_di" bpmnElement="Task_EnvoyerRappel">
+        <dc:Bounds x="2000" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Timer_Rappel_di" bpmnElement="Timer_Rappel">
+        <dc:Bounds x="1932" y="582" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1919" y="625" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ConfirmerRDV_di" bpmnElement="Task_ConfirmerRDV">
+        <dc:Bounds x="1420" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_NotifierPatient_di" bpmnElement="Task_NotifierPatient">
+        <dc:Bounds x="1640" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Annule_di" bpmnElement="EndEvent_Annule">
+        <dc:Bounds x="2302" y="752" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2291" y="795" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Success_di" bpmnElement="EndEvent_Success">
+        <dc:Bounds x="2632" y="712" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2625" y="755" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AnnulerRDV_di" bpmnElement="Task_AnnulerRDV">
+        <dc:Bounds x="2140" y="610" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Consultation_di" bpmnElement="Task_Consultation">
+        <dc:Bounds x="1990" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_MAJDossier_di" bpmnElement="Task_MAJDossier">
+        <dc:Bounds x="2300" y="470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Facturation_di" bpmnElement="Task_Facturation">
+        <dc:Bounds x="2420" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_NotifFinale_di" bpmnElement="Task_NotifFinale">
+        <dc:Bounds x="2590" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_17ps37e" bpmnElement="Activity_1vxcbuv">
+        <dc:Bounds x="1750" y="960" width="160" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_Annulation_di" bpmnElement="BoundaryEvent_Annulation">
+        <dc:Bounds x="2052" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2090" y="262" width="36" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="668" y="450" />
+        <di:waypoint x="770" y="450" />
+        <di:waypoint x="770" y="600" />
+        <di:waypoint x="825" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_021buuz_di" bpmnElement="Flow_021buuz">
+        <di:waypoint x="850" y="575" />
+        <di:waypoint x="850" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="862" y="495" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_oui_di" bpmnElement="Flow_5_oui">
+        <di:waypoint x="875" y="600" />
+        <di:waypoint x="1050" y="600" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="903" y="582" width="30" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kmzsrb_di" bpmnElement="Flow_0kmzsrb">
+        <di:waypoint x="1130" y="170" />
+        <di:waypoint x="1110" y="170" />
+        <di:waypoint x="1110" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1150" y="600" />
+        <di:waypoint x="1205" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qckegk_di" bpmnElement="Flow_0qckegk">
+        <di:waypoint x="400" y="230" />
+        <di:waypoint x="400" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="430" y="550" />
+        <di:waypoint x="485" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_oui_di" bpmnElement="Flow_3_oui">
+        <di:waypoint x="510" y="525" />
+        <di:waypoint x="510" y="450" />
+        <di:waypoint x="568" y="450" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="490" y="480" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_non_di" bpmnElement="Flow_3_non">
+        <di:waypoint x="510" y="575" />
+        <di:waypoint x="510" y="680" />
+        <di:waypoint x="550" y="680" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="517" y="617" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_End_Refuse_di" bpmnElement="Flow_End_Refuse">
+        <di:waypoint x="650" y="680" />
+        <di:waypoint x="692" y="680" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lop8s2_di" bpmnElement="Flow_1lop8s2">
+        <di:waypoint x="940" y="390" />
+        <di:waypoint x="1002" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_End_Annule_di" bpmnElement="Flow_End_Annule">
+        <di:waypoint x="2190" y="690" />
+        <di:waypoint x="2190" y="770" />
+        <di:waypoint x="2302" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ipmm0t_di" bpmnElement="Flow_0ipmm0t">
+        <di:waypoint x="1890" y="960" />
+        <di:waypoint x="1890" y="600" />
+        <di:waypoint x="1932" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="2090" y="210" />
+        <di:waypoint x="2350" y="210" />
+        <di:waypoint x="2350" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Annulation_di" bpmnElement="Flow_Annulation">
+        <di:waypoint x="2088" y="250" />
+        <di:waypoint x="2180" y="250" />
+        <di:waypoint x="2180" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05gn739_di" bpmnElement="Flow_05gn739">
+        <di:waypoint x="278" y="190" />
+        <di:waypoint x="360" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_non_di" bpmnElement="Flow_8_non">
+        <di:waypoint x="1230" y="575" />
+        <di:waypoint x="1226" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1235" y="393" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1968" y="600" />
+        <di:waypoint x="2000" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="2050" y="560" />
+        <di:waypoint x="2050" y="405" />
+        <di:waypoint x="2040" y="405" />
+        <di:waypoint x="2040" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_oui_di" bpmnElement="Flow_8_oui">
+        <di:waypoint x="1255" y="600" />
+        <di:waypoint x="1420" y="600" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1320" y="582" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13hm4pw_di" bpmnElement="Flow_13hm4pw">
+        <di:waypoint x="1520" y="600" />
+        <di:waypoint x="1640" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="2350" y="550" />
+        <di:waypoint x="2350" y="600" />
+        <di:waypoint x="2420" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="2520" y="600" />
+        <di:waypoint x="2590" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_End_OK_di" bpmnElement="Flow_End_OK">
+        <di:waypoint x="2640" y="640" />
+        <di:waypoint x="2640" y="676" />
+        <di:waypoint x="2650" y="676" />
+        <di:waypoint x="2650" y="712" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xunjdw_di" bpmnElement="Flow_1xunjdw">
+        <di:waypoint x="1740" y="600" />
+        <di:waypoint x="1830" y="600" />
+        <di:waypoint x="1830" y="960" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

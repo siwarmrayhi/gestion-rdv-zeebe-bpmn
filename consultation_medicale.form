@@ -1,0 +1,43 @@
+{
+  "components": [
+    {
+      "label": "Diagnostic",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_13bxcc8",
+        "columns": null
+      },
+      "id": "Field_1ckq0jl",
+      "key": "textarea_99y8oo"
+    },
+    {
+      "label": "Traitement prescrit",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1h0jxjs",
+        "columns": null
+      },
+      "id": "Field_1yuoa9j",
+      "key": "textfield_ldfo4"
+    },
+    {
+      "label": "montantFacture",
+      "type": "number",
+      "layout": {
+        "row": "Row_07xcl9m",
+        "columns": null
+      },
+      "id": "Field_1o2jhja",
+      "key": "number_szpj6k"
+    }
+  ],
+  "type": "default",
+  "id": "Form_12qrr0l",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.45.0"
+  },
+  "schemaVersion": 19
+}

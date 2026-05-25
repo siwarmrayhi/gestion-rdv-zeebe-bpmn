@@ -1,0 +1,33 @@
+{
+  "components": [
+    {
+      "label": "MedecinID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1s93gow",
+        "columns": null
+      },
+      "id": "Field_07jkiut",
+      "key": "medecinId"
+    },
+    {
+      "label": "Medecin disponible",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1s6m7o2",
+        "columns": null
+      },
+      "id": "Field_0g0nz42",
+      "key": "medecinDisponible"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1fflley",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.45.0"
+  },
+  "schemaVersion": 19
+}

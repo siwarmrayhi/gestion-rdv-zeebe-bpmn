@@ -1,0 +1,84 @@
+{
+  "components": [
+    {
+      "label": "patientId",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11u08k8",
+        "columns": null
+      },
+      "id": "Field_05cy3ld",
+      "key": "patientId",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "PatientName",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11u08k8",
+        "columns": null
+      },
+      "id": "Field_0h5glsr",
+      "key": "patientName",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "dateRDV",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_04fewfj",
+        "columns": 7
+      },
+      "id": "Field_1bw90ht",
+      "key": "dateRDV",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "specialite",
+      "values": [
+        {
+          "label": "Cardiologie",
+          "value": "cardiologie"
+        },
+        {
+          "label": "Généraliste",
+          "value": "generaliste"
+        },
+        {
+          "label": "ORL",
+          "value": "orl"
+        },
+        {
+          "label": "Dermatologie",
+          "value": "dermatologie"
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "Row_04fewfj",
+        "columns": null
+      },
+      "id": "Field_1873atq",
+      "key": "specialite",
+      "validate": {
+        "required": false
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_0k7ghz8",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.8.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.45.0"
+  },
+  "schemaVersion": 19
+}
